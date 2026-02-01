@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
 {% block header_info %}
-    <a href="{{ url_for('index') }}" class="back-link">← 返回列表</a>
-    <h1 class="detail-title">{% if edit_mode %}编辑不可能三角{% else %}添加不可能三角{% endif %}</h1>
 {% endblock %}
 
 {% block header_actions %}
-    <a href="{{ url_for('index') }}" class="btn btn-secondary">返回首页</a>
 {% endblock %}
 
 {% block content %}
 <div class="form-page">
+    <div class="form-header">
+        <h1>{% if edit_mode %}编辑不可能三角{% else %}添加不可能三角{% endif %}</h1>
+    </div>
     <div class="form-container">
         <form method="POST" action="{{ url_for('add_it') if not edit_mode else url_for('edit_it', id=it.id) }}">
             <div class="form-section">

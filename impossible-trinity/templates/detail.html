@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 
 {% block header_info %}
-    <a href="{{ url_for('index') }}" class="back-link">← 返回列表</a>
-    <h1 class="detail-title">{{ it.name }}</h1>
-    <p class="detail-subtitle">{{ it.name_en }}</p>
-    <span class="detail-field">{{ it.field }}</span>
 {% endblock %}
 
 {% block content %}
 <div class="detail-page">
     <div class="detail-body">
+        <div class="detail-header">
+            <h1 class="detail-title">{{ it.name }}</h1>
+            <p class="detail-subtitle">{{ it.name_en }}</p>
+            <a href="{{ url_for('index') }}" class="back-link">← 返回列表</a>
+        </div>
+
         {% if it.feature_image_url %}
             <div class="feature-image">
                 <img src="{{ it.feature_image_url }}" alt="{{ it.name }}" onerror="this.style.display='none'">

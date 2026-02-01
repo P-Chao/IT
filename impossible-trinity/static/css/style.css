@@ -101,11 +101,62 @@ body {
     color: #fff;
 }
 
+.header-info .site-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    font-weight: 700;
+    margin: 0;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.header-info .site-title:hover {
+    color: #3498db;
+}
+
 .header-info .page-title {
     font-size: 1.5rem;
     color: #2c3e50;
     font-weight: 700;
     margin: 0;
+}
+
+.detail-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.detail-header .detail-title {
+    font-size: 2rem;
+    color: #2c3e50;
+    font-weight: 700;
+    margin: 0;
+}
+
+.detail-header .detail-subtitle {
+    color: #999;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.detail-header .back-link {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: 0.5rem;
+}
+
+.detail-header .back-link:hover {
+    color: #2980b9;
+    text-decoration: underline;
 }
 
 .main-nav {
