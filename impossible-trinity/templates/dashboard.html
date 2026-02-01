@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block header_info %}
+    <h1 class="detail-title">用户后台</h1>
+    <span class="detail-field">我的不可能三角</span>
+{% endblock %}
+
+{% block header_actions %}
+    <a href="{{ url_for('add_it') }}" class="btn btn-primary">添加新IT</a>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">返回首页</a>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="dashboard-content">
+        <h2>我创建的不可能三角 ({{ its|length }})</h2>
+        
+        {% if its %}
+            <div class="table-container">
+                <table class="data-table dense">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>领域</th>
+                            <th>元素1</th>
+                            <th>元素2</th>
+                            <th>元素3</th>
+                            <th>赞同</th>
+                            <th>评论</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for it in its %}
+                            <tr>
+                                <td>{{ it.id }}</td>
+                                <td>
+                                    <a href="{{ url_for('detail', id=it.id) }}" class="table-link">{{ it.name }}</a>
+                                </td>
+                                <td>{{ it.field }}</td>
+                                <td>{{ it.element1 }}</td>
+                                <td>{{ it.element2 }}</td>
+                                <td>{{ it.element3 }}</td>
+                                <td>{{ it.agree_count }}</td>
+                                <td>{{ it.comments|length }}</td>
+                                <td>{{ it.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <a href="{{ url_for('edit_it', id=it.id) }}" class="btn-small btn-edit">编辑</a>
+                                    <form action="{{ url_for('delete_it', id=it.id) }}" method="POST" class="inline-form">
+                                        <button type="submit" class="btn-small btn-delete" onclick="return confirm('确定删除？')">删除</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>您还没有创建任何不可能三角</p>
+                <a href="{{ url_for('add_it') }}" class="btn btn-primary">创建第一个IT</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

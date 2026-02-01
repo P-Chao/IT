@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block header_info %}
+    <h2 class="page-title">不可能三角数据库</h2>
+{% endblock %}
+
+{% block header_actions %}
+    <div class="view-toggle">
+        <button class="toggle-btn {% if view_type == 'card' %}active{% endif %}" onclick="switchView('card')">
+            卡片视图
+        </button>
+        <button class="toggle-btn {% if view_type == 'table' %}active{% endif %}" onclick="switchView('table')">
+            表格视图
+        </button>
+    </div>
+{% endblock %}
+
+{% block content %}
+{% if its %}
+    {% if view_type == 'card' %}
+        <div id="card-grid"
+             class="card-grid masonry-grid"
+             data-page="1"
+             data-has-more="{{ 'true' if has_more else 'false' }}"
+             data-per-page="{{ per_page or 12 }}">
+            {% for it in its %}
+                <a class="card card-link masonry-item" href="{{ url_for('detail', id=it.id) }}">
+                    <div class="card-content">
+                        <h3 class="card-title">{{ it.name }}</h3>
+                        <p class="card-field">{{ it.field }}</p>
+                        
+                        <!-- Three Elements - Compact Horizontal Layout -->
+                        <div class="card-elements-horizontal">
+                            <div class="element-badge tooltip-container">
+                                <span>{{ it.element1 }}</span>
+                                {% if it.element1_sacrifice_explanation %}
+                                    <div class="tooltip-content card-tooltip">
+                                        <strong>{{ it.element1 }}无法满足时：</strong>
+                                        {{ it.element1_sacrifice_explanation }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="element-badge tooltip-container">
+                                <span>{{ it.element2 }}</span>
+                                {% if it.element2_sacrifice_explanation %}
+                                    <div class="tooltip-content card-tooltip">
+                                        <strong>{{ it.element2 }}无法满足时：</strong>
+                                        {{ it.element2_sacrifice_explanation }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="element-badge tooltip-container">
+                                <span>{{ it.element3 }}</span>
+                                {% if it.element3_sacrifice_explanation %}
+                                    <div class="tooltip-content card-tooltip">
+                                        <strong>{{ it.element3 }}无法满足时：</strong>
+                                        {{ it.element3_sacrifice_explanation }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <p class="card-preview">{{ it.description[:100] }}...</p>
+                        <div class="card-meta">
+                            <span class="agree-count"><span class="meta-icon">赞</span>{{ it.agree_count }}</span>
+                            <span class="comment-count"><span class="meta-icon">评</span>{{ it.comments|length }}</span>
+                            <span class="card-cta">查看详情 →</span>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        <div id="card-loader" class="card-loader">加载中...</div>
+        <div id="card-sentinel" class="card-sentinel" aria-hidden="true"></div>
+    {% else %}
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>领域</th>
+                        <th>元素1</th>
+                        <th>元素2</th>
+                        <th>元素3</th>
+                        <th>赞同</th>
+                        <th>评论</th>
+                        <th>创建时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for it in its %}
+                        <tr role="link" tabindex="0" aria-label="查看 {{ it.name }}"
+                            onclick="location.href='{{ url_for('detail', id=it.id) }}'"
+                            onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); location.href='{{ url_for('detail', id=it.id) }}'; }">
+                            <td class="table-name">{{ it.name }}</td>
+                            <td>{{ it.field }}</td>
+                            <td>{{ it.element1 }}</td>
+                            <td>{{ it.element2 }}</td>
+                            <td>{{ it.element3 }}</td>
+                            <td>{{ it.agree_count }}</td>
+                            <td>{{ it.comments|length }}</td>
+                            <td>{{ it.created_at.strftime('%Y-%m-%d') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="empty-state">
+        <p>暂无不可能三角数据</p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('add_it') }}" class="btn btn-primary">添加第一个IT</a>
+        {% else %}
+            <a href="{{ url_for('register') }}" class="btn btn-primary">注册并添加</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

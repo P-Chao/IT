@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block header_info %}
+    <a href="{{ url_for('index') }}" class="back-link">← 返回列表</a>
+    <h1 class="detail-title">{% if edit_mode %}编辑不可能三角{% else %}添加不可能三角{% endif %}</h1>
+{% endblock %}
+
+{% block header_actions %}
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">返回首页</a>
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('add_it') if not edit_mode else url_for('edit_it', id=it.id) }}">
+            <div class="form-section">
+                <h2>基本信息</h2>
+                <div class="form-group">
+                    <label for="name">名称 *</label>
+                    <input type="text" id="name" name="name" required
+                           value="{% if edit_mode %}{{ it.name }}{% endif %}"
+                           placeholder="例如：蒙代尔不可能三角">
+                </div>
+                
+                <div class="form-group">
+                    <label for="name_en">英文名称</label>
+                    <input type="text" id="name_en" name="name_en"
+                           value="{% if edit_mode %}{{ it.name_en }}{% else %}Impossible Trinity{% endif %}"
+                           placeholder="Impossible Trinity">
+                </div>
+                
+                <div class="form-group">
+                    <label for="field">领域 *</label>
+                    <input type="text" id="field" name="field" required
+                           value="{% if edit_mode %}{{ it.field }}{% endif %}"
+                           placeholder="例如：宏观经济学">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>三个元素 *</h2>
+                <div class="form-group">
+                    <label for="element1">元素1 *</label>
+                    <input type="text" id="element1" name="element1" required
+                           value="{% if edit_mode %}{{ it.element1 }}{% endif %}"
+                           placeholder="例如：资本自由流动">
+                </div>
+                
+                <div class="form-group">
+                    <label for="element2">元素2 *</label>
+                    <input type="text" id="element2" name="element2" required
+                           value="{% if edit_mode %}{{ it.element2 }}{% endif %}"
+                           placeholder="例如：固定汇率">
+                </div>
+                
+                <div class="form-group">
+                    <label for="element3">元素3 *</label>
+                    <input type="text" id="element3" name="element3" required
+                           value="{% if edit_mode %}{{ it.element3 }}{% endif %}"
+                           placeholder="例如：独立的货币政策">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>详细描述</h2>
+                <div class="form-group">
+                    <label for="description">详细描述 *</label>
+                    <textarea id="description" name="description" required rows="6"
+                              placeholder="详细描述这个不可能三角的含义和应用...">{% if edit_mode %}{{ it.description }}{% endif %}</textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>三种情况说明</h2>
+                <p class="form-hint">说明当另外两个元素满足时，该元素无法满足的情况或例子</p>
+                
+                <div class="form-group">
+                    <label for="element1_sacrifice_explanation">{{ it.element1 if edit_mode else '元素1' }}无法满足的说明（当元素2+元素3满足时）</label>
+                    <textarea id="element1_sacrifice_explanation" name="element1_sacrifice_explanation" rows="4"
+                              placeholder="例如：当选择固定汇率和独立货币政策时，必须限制资本自由流动，否则资本流动会冲击固定汇率...">{% if edit_mode %}{{ it.element1_sacrifice_explanation }}{% endif %}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="element2_sacrifice_explanation">{{ it.element2 if edit_mode else '元素2' }}无法满足的说明（当元素1+元素3满足时）</label>
+                    <textarea id="element2_sacrifice_explanation" name="element2_sacrifice_explanation" rows="4"
+                              placeholder="例如：当选择资本自由流动和独立货币政策时，汇率会自由浮动，无法维持固定汇率...">{% if edit_mode %}{{ it.element2_sacrifice_explanation }}{% endif %}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="element3_sacrifice_explanation">{{ it.element3 if edit_mode else '元素3' }}无法满足的说明（当元素1+元素2满足时）</label>
+                    <textarea id="element3_sacrifice_explanation" name="element3_sacrifice_explanation" rows="4"
+                              placeholder="例如：当选择资本自由流动和固定汇率时，货币政策必须跟随锚货币国家，无法保持独立...">{% if edit_mode %}{{ it.element3_sacrifice_explanation }}{% endif %}</textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>图片链接（可选）</h2>
+                <div class="form-group">
+                    <label for="feature_image_url">特色图片URL</label>
+                    <input type="url" id="feature_image_url" name="feature_image_url"
+                           value="{% if edit_mode %}{{ it.feature_image_url }}{% endif %}"
+                           placeholder="https://example.com/image.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label for="element1_image_url">元素1图片URL</label>
+                    <input type="url" id="element1_image_url" name="element1_image_url"
+                           value="{% if edit_mode %}{{ it.element1_image_url }}{% endif %}"
+                           placeholder="https://example.com/element1.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label for="element2_image_url">元素2图片URL</label>
+                    <input type="url" id="element2_image_url" name="element2_image_url"
+                           value="{% if edit_mode %}{{ it.element2_image_url }}{% endif %}"
+                           placeholder="https://example.com/element2.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label for="element3_image_url">元素3图片URL</label>
+                    <input type="url" id="element3_image_url" name="element3_image_url"
+                           value="{% if edit_mode %}{{ it.element3_image_url }}{% endif %}"
+                           placeholder="https://example.com/element3.jpg">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>其他信息</h2>
+                <div class="form-group">
+                    <label for="hyperlink">参考资料链接</label>
+                    <input type="url" id="hyperlink" name="hyperlink"
+                           value="{% if edit_mode %}{{ it.hyperlink }}{% endif %}"
+                           placeholder="https://example.com/reference">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    {% if edit_mode %}更新{% else %}创建{% endif %}
+                </button>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
