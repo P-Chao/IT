@@ -12,6 +12,11 @@
         <h1 class="dashboard-title">管理员后台</h1>
         <div class="dashboard-actions">
             <a href="{{ url_for('add_it') }}" class="btn btn-primary">添加新IT</a>
+            <a href="{{ url_for('export_csv') }}" class="btn btn-success">导出CSV</a>
+            <form action="{{ url_for('import_csv') }}" method="POST" enctype="multipart/form-data" class="inline-form">
+                <input type="file" name="file" accept=".csv" id="csv-file-input" style="display: none;">
+                <button type="submit" class="btn btn-info" onclick="document.getElementById('csv-file-input').click(); return false;" id="import-btn">导入CSV</button>
+            </form>
         </div>
     </div>
     <div class="dashboard-content">
@@ -51,9 +56,21 @@
                                 <td>{{ it.comments|length }}</td>
                                 <td>{{ it.created_at.strftime('%Y-%m-%d') }}</td>
                                 <td>
-                                    <a href="{{ url_for('edit_it', id=it.id) }}" class="btn-small btn-edit">编辑</a>
+                                    <a href="{{ url_for('edit_it', id=it.id) }}" class="btn-small btn-edit">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                        编辑
+                                    </a>
                                     <form action="{{ url_for('delete_it', id=it.id) }}" method="POST" class="inline-form">
-                                        <button type="submit" class="btn-small btn-delete" onclick="return confirm('确定删除？')">删除</button>
+                                        <button type="submit" class="btn-small btn-delete" onclick="return confirm('确定删除？')">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                            删除
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -69,4 +86,18 @@
         {% endif %}
     </div>
 </div>
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('csv-file-input');
+    const importForm = fileInput.closest('form');
+    
+    fileInput.addEventListener('change', function(e) {
+        if (this.files.length > 0) {
+            importForm.submit();
+        }
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}

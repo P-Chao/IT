@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import bcrypt
+import csv
+import io
 from models import db, User, ImpossibleTrinity, Comment
 from datetime import datetime
 
@@ -298,6 +300,133 @@ def agree_it(id):
     it.agree_count += 1
     db.session.commit()
     return jsonify({'success': True, 'count': it.agree_count})
+
+@app.route('/admin/export', methods=['GET'])
+@login_required
+def export_csv():
+    """Export all Impossible Trinities to CSV"""
+    if not current_user.is_admin:
+        flash('需要管理员权限')
+        return redirect(url_for('index'))
+    
+    # Create a string buffer for CSV output
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write header
+    header = [
+        'name', 'name_en', 'field', 
+        'element1', 'element2', 'element3',
+        'description', 'hyperlink',
+        'feature_image_url', 'element1_image_url', 'element2_image_url', 'element3_image_url',
+        'element1_sacrifice_explanation', 'element2_sacrifice_explanation', 'element3_sacrifice_explanation'
+    ]
+    writer.writerow(header)
+    
+    # Write data rows
+    its = ImpossibleTrinity.query.all()
+    for it in its:
+        row = [
+            it.name,
+            it.name_en,
+            it.field,
+            it.element1,
+            it.element2,
+            it.element3,
+            it.description,
+            it.hyperlink or '',
+            it.feature_image_url or '',
+            it.element1_image_url or '',
+            it.element2_image_url or '',
+            it.element3_image_url or '',
+            it.element1_sacrifice_explanation or '',
+            it.element2_sacrifice_explanation or '',
+            it.element3_sacrifice_explanation or ''
+        ]
+        writer.writerow(row)
+    
+    # Create response
+    output.seek(0)
+    response = send_file(
+        io.BytesIO(output.getvalue().encode('utf-8-sig')),
+        mimetype='text/csv',
+        as_attachment=True,
+        download_name=f'impossible_trinities_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
+    )
+    return response
+
+@app.route('/admin/import', methods=['POST'])
+@login_required
+def import_csv():
+    """Import Impossible Trinities from CSV"""
+    if not current_user.is_admin:
+        flash('需要管理员权限')
+        return redirect(url_for('index'))
+    
+    if 'file' not in request.files:
+        flash('没有上传文件')
+        return redirect(url_for('admin'))
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        flash('没有选择文件')
+        return redirect(url_for('admin'))
+    
+    if not file.filename.endswith('.csv'):
+        flash('请上传CSV文件')
+        return redirect(url_for('admin'))
+    
+    try:
+        # Read CSV file
+        stream = io.TextIOWrapper(file, encoding='utf-8-sig')
+        csv_reader = csv.DictReader(stream)
+        
+        imported_count = 0
+        skipped_count = 0
+        
+        for row in csv_reader:
+            try:
+                # Create new Impossible Trinity
+                it = ImpossibleTrinity(
+                    name=row.get('name', ''),
+                    name_en=row.get('name_en', 'Impossible Trinity'),
+                    field=row.get('field', ''),
+                    element1=row.get('element1', ''),
+                    element2=row.get('element2', ''),
+                    element3=row.get('element3', ''),
+                    description=row.get('description', ''),
+                    hyperlink=row.get('hyperlink', '') or None,
+                    feature_image_url=row.get('feature_image_url', '') or None,
+                    element1_image_url=row.get('element1_image_url', '') or None,
+                    element2_image_url=row.get('element2_image_url', '') or None,
+                    element3_image_url=row.get('element3_image_url', '') or None,
+                    element1_sacrifice_explanation=row.get('element1_sacrifice_explanation', '') or None,
+                    element2_sacrifice_explanation=row.get('element2_sacrifice_explanation', '') or None,
+                    element3_sacrifice_explanation=row.get('element3_sacrifice_explanation', '') or None,
+                    creator_id=current_user.id
+                )
+                
+                db.session.add(it)
+                imported_count += 1
+                
+            except Exception as e:
+                print(f"Error importing row: {e}")
+                skipped_count += 1
+                continue
+        
+        db.session.commit()
+        
+        if imported_count > 0:
+            flash(f'成功导入 {imported_count} 条记录')
+        if skipped_count > 0:
+            flash(f'跳过 {skipped_count} 条无效记录')
+            
+    except Exception as e:
+        flash(f'导入失败: {str(e)}')
+        return redirect(url_for('admin'))
+    
+    return redirect(url_for('admin'))
 
 if __name__ == '__main__':
     with app.app_context():
