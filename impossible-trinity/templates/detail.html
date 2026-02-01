@@ -9,6 +9,40 @@
         <div class="detail-header">
             <h1 class="detail-title">{{ it.name }}</h1>
             <p class="detail-subtitle">{{ it.name_en }}</p>
+            
+            <div class="detail-navigation">
+                {% if previous_it %}
+                    <a href="{{ url_for('detail', id=previous_it.id) }}" class="btn btn-secondary nav-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.4rem;">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        前一条
+                    </a>
+                {% else %}
+                    <button class="btn btn-secondary nav-btn" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.4rem;">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        前一条
+                    </button>
+                {% endif %}
+                
+                {% if next_it %}
+                    <a href="{{ url_for('detail', id=next_it.id) }}" class="btn btn-secondary nav-btn">
+                        后一条
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 0.4rem;">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </a>
+                {% else %}
+                    <button class="btn btn-secondary nav-btn" disabled>
+                        后一条
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 0.4rem;">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                {% endif %}
+            </div>
         </div>
 
         {% if it.feature_image_url %}

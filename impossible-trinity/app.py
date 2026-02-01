@@ -113,7 +113,17 @@ def api_its():
 @app.route('/detail/<int:id>')
 def detail(id):
     it = ImpossibleTrinity.query.get_or_404(id)
-    return render_template('detail.html', it=it)
+    
+    # Get previous and next records (ordered by created_at descending)
+    previous_it = ImpossibleTrinity.query.filter(
+        ImpossibleTrinity.created_at > it.created_at
+    ).order_by(ImpossibleTrinity.created_at.asc()).first()
+    
+    next_it = ImpossibleTrinity.query.filter(
+        ImpossibleTrinity.created_at < it.created_at
+    ).order_by(ImpossibleTrinity.created_at.desc()).first()
+    
+    return render_template('detail.html', it=it, previous_it=previous_it, next_it=next_it)
 
 @app.route('/comment/<int:id>', methods=['POST'])
 @login_required
