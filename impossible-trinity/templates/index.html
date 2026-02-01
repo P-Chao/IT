@@ -40,11 +40,11 @@
              data-has-more="{{ 'true' if has_more else 'false' }}"
              data-per-page="{{ per_page or 12 }}">
             {% for it in its %}
-                <a class="card card-link masonry-item" href="{{ url_for('detail', id=it.id) }}">
+                    <a class="card card-link masonry-item" href="{{ url_for('detail', id=it.id) }}">
                     <div class="card-content">
                         <div class="card-header-row">
                             <h3 class="card-title">{{ it.name }}</h3>
-                            <p class="card-field">{{ it.field }}</p>
+                            <p class="card-field clickable" onclick="filterByField('{{ it.field }}', event)">{{ it.field }}</p>
                         </div>
                         
                         <!-- Three Elements - Compact Horizontal Layout -->

@@ -11,11 +11,31 @@
     <div class="dashboard-header">
         <h1 class="dashboard-title">管理员后台</h1>
         <div class="dashboard-actions">
-            <a href="{{ url_for('add_it') }}" class="btn btn-primary">添加新IT</a>
-            <a href="{{ url_for('export_csv') }}" class="btn btn-success">导出CSV</a>
+            <a href="{{ url_for('add_it') }}" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.4rem;">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                添加新IT
+            </a>
+            <a href="{{ url_for('export_csv') }}" class="btn btn-success">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.4rem;">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                导出CSV
+            </a>
             <form action="{{ url_for('import_csv') }}" method="POST" enctype="multipart/form-data" class="inline-form">
                 <input type="file" name="file" accept=".csv" id="csv-file-input" style="display: none;">
-                <button type="submit" class="btn btn-info" onclick="document.getElementById('csv-file-input').click(); return false;" id="import-btn">导入CSV</button>
+                <button type="submit" class="btn btn-info" onclick="document.getElementById('csv-file-input').click(); return false;" id="import-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.4rem;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    导入CSV
+                </button>
             </form>
         </div>
     </div>

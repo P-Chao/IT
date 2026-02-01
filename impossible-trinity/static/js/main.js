@@ -5,6 +5,22 @@ function switchView(viewType) {
     window.location.href = url.toString();
 }
 
+// Filter by field functionality for static HTML cards
+function filterByField(field, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const url = new URL(window.location);
+    url.searchParams.set('field', field);
+    
+    // Save current scroll position before navigation
+    const filterContainer = document.querySelector('.field-filter-container');
+    if (filterContainer) {
+        sessionStorage.setItem('filterContainerScrollLeft', filterContainer.scrollLeft);
+    }
+    
+    window.location.href = url.toString();
+}
+
 // Table row creation helper
 function createTableRow(item) {
     const tr = document.createElement('tr');
@@ -69,6 +85,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     });
 
+    // Add click handler to save scroll position when clicking field-chips
+    const fieldChips = document.querySelectorAll('.field-chip');
+    fieldChips.forEach(chip => {
+        chip.addEventListener('click', function(e) {
+            const filterContainer = document.querySelector('.field-filter-container');
+            if (filterContainer) {
+                sessionStorage.setItem('filterContainerScrollLeft', filterContainer.scrollLeft);
+            }
+        });
+    });
+
+    // Restore scroll position and scroll active field chip into view
+    const activeChip = document.querySelector('.field-chip.active');
+    const filterContainer = document.querySelector('.field-filter-container');
+    if (activeChip && filterContainer) {
+        // First restore saved scroll position if exists
+        const savedScrollLeft = sessionStorage.getItem('filterContainerScrollLeft');
+        if (savedScrollLeft) {
+            filterContainer.scrollLeft = parseInt(savedScrollLeft, 10);
+            sessionStorage.removeItem('filterContainerScrollLeft');
+        }
+        
+        // Then scroll to active chip with delay for smooth animation
+        setTimeout(() => {
+            activeChip.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'center'
+            });
+        }, 100);
+    }
+
     const cardGrid = document.getElementById('card-grid');
     if (cardGrid) {
         const sentinel = document.getElementById('card-sentinel');
@@ -114,8 +162,25 @@ document.addEventListener('DOMContentLoaded', function() {
             title.textContent = item.name;
 
             const field = document.createElement('p');
-            field.className = 'card-field';
+            field.className = 'card-field clickable';
             field.textContent = item.field;
+            field.dataset.field = item.field;
+            
+            // Add click event for filtering
+            field.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const url = new URL(window.location);
+                url.searchParams.set('field', item.field);
+                
+                // Save current scroll position before navigation
+                const filterContainer = document.querySelector('.field-filter-container');
+                if (filterContainer) {
+                    sessionStorage.setItem('filterContainerScrollLeft', filterContainer.scrollLeft);
+                }
+                
+                window.location.href = url.toString();
+            });
 
             headerRow.appendChild(title);
             headerRow.appendChild(field);
