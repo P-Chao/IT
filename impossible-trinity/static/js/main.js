@@ -5,6 +5,23 @@ function switchView(viewType) {
     window.location.href = url.toString();
 }
 
+// Mobile menu toggle functionality
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mainNav = document.getElementById('main-nav');
+
+if (mobileMenuBtn && mainNav) {
+    mobileMenuBtn.addEventListener('click', function() {
+        mainNav.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!mainNav.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+            mainNav.classList.remove('active');
+        }
+    });
+}
+
 // Filter by field functionality for static HTML cards
 function filterByField(field, event) {
     event.preventDefault();
