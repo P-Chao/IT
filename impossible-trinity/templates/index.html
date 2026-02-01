@@ -15,6 +15,23 @@
 {% endblock %}
 
 {% block content %}
+{% if fields %}
+    <div class="field-filter-bar">
+        <div class="field-filter-container">
+            <a href="{{ url_for('index', view=view_type, q=search_query) }}" 
+               class="field-chip {% if not current_field %}active{% endif %}">
+                全部
+            </a>
+            {% for field in fields %}
+                <a href="{{ url_for('index', view=view_type, field=field, q=search_query) }}" 
+                   class="field-chip {% if current_field == field %}active{% endif %}">
+                    {{ field }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
 {% if its %}
     {% if view_type == 'card' %}
         <div id="card-grid"
@@ -25,8 +42,10 @@
             {% for it in its %}
                 <a class="card card-link masonry-item" href="{{ url_for('detail', id=it.id) }}">
                     <div class="card-content">
-                        <h3 class="card-title">{{ it.name }}</h3>
-                        <p class="card-field">{{ it.field }}</p>
+                        <div class="card-header-row">
+                            <h3 class="card-title">{{ it.name }}</h3>
+                            <p class="card-field">{{ it.field }}</p>
+                        </div>
                         
                         <!-- Three Elements - Compact Horizontal Layout -->
                         <div class="card-elements-horizontal">
@@ -59,7 +78,7 @@
                             </div>
                         </div>
                         
-                        <p class="card-preview">{{ it.description[:100] }}...</p>
+                        <p class="card-preview">{{ it.description[:150] }}...</p>
                         <div class="card-meta">
                             <span class="agree-count"><span class="meta-icon">赞</span>{{ it.agree_count }}</span>
                             <span class="comment-count"><span class="meta-icon">评</span>{{ it.comments|length }}</span>
@@ -72,7 +91,10 @@
         <div id="card-loader" class="card-loader">加载中...</div>
         <div id="card-sentinel" class="card-sentinel" aria-hidden="true"></div>
     {% else %}
-        <div class="table-container">
+        <div id="table-container" class="table-container"
+             data-page="1"
+             data-has-more="{{ 'true' if has_more else 'false' }}"
+             data-per-page="{{ per_page or 20 }}">
             <table class="data-table">
                 <thead>
                     <tr>
@@ -86,7 +108,7 @@
                         <th>创建时间</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="table-body">
                     {% for it in its %}
                         <tr role="link" tabindex="0" aria-label="查看 {{ it.name }}"
                             onclick="location.href='{{ url_for('detail', id=it.id) }}'"
@@ -104,6 +126,8 @@
                 </tbody>
             </table>
         </div>
+        <div id="table-loader" class="card-loader">加载中...</div>
+        <div id="table-sentinel" class="card-sentinel" aria-hidden="true"></div>
     {% endif %}
 {% else %}
     <div class="empty-state">

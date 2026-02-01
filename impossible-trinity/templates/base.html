@@ -17,6 +17,15 @@
                 {% block header_actions %}{% endblock %}
             </div>
             <nav class="main-nav">
+                <form class="search-form" action="{{ url_for('index') }}" method="GET">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        class="search-input" 
+                        placeholder="搜索..." 
+                        value="{{ request.args.get('q', '') }}"
+                    >
+                </form>
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('dashboard') }}" class="nav-link">管理</a>
                     <a href="{{ url_for('add_it') }}" class="nav-link">添加IT</a>

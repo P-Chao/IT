@@ -5,6 +5,58 @@ function switchView(viewType) {
     window.location.href = url.toString();
 }
 
+// Table row creation helper
+function createTableRow(item) {
+    const tr = document.createElement('tr');
+    tr.setAttribute('role', 'link');
+    tr.setAttribute('tabindex', '0');
+    tr.setAttribute('aria-label', `查看 ${item.name}`);
+    tr.onclick = () => location.href = `/detail/${item.id}`;
+    tr.onkeydown = (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            location.href = `/detail/${item.id}`;
+        }
+    };
+
+    const nameCell = document.createElement('td');
+    nameCell.className = 'table-name';
+    nameCell.textContent = item.name;
+
+    const fieldCell = document.createElement('td');
+    fieldCell.textContent = item.field;
+
+    const element1Cell = document.createElement('td');
+    element1Cell.textContent = item.element1;
+
+    const element2Cell = document.createElement('td');
+    element2Cell.textContent = item.element2;
+
+    const element3Cell = document.createElement('td');
+    element3Cell.textContent = item.element3;
+
+    const agreeCell = document.createElement('td');
+    agreeCell.textContent = item.agree_count;
+
+    const commentsCell = document.createElement('td');
+    commentsCell.textContent = item.comments_count;
+
+    const dateCell = document.createElement('td');
+    const date = new Date(item.created_at);
+    dateCell.textContent = date.toISOString().split('T')[0];
+
+    tr.appendChild(nameCell);
+    tr.appendChild(fieldCell);
+    tr.appendChild(element1Cell);
+    tr.appendChild(element2Cell);
+    tr.appendChild(element3Cell);
+    tr.appendChild(agreeCell);
+    tr.appendChild(commentsCell);
+    tr.appendChild(dateCell);
+
+    return tr;
+}
+
 // Auto-hide flash messages
 document.addEventListener('DOMContentLoaded', function() {
     const flashMessages = document.querySelectorAll('.flash-message');
@@ -54,6 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const content = document.createElement('div');
             content.className = 'card-content';
 
+            const headerRow = document.createElement('div');
+            headerRow.className = 'card-header-row';
+
             const title = document.createElement('h3');
             title.className = 'card-title';
             title.textContent = item.name;
@@ -61,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const field = document.createElement('p');
             field.className = 'card-field';
             field.textContent = item.field;
+
+            headerRow.appendChild(title);
+            headerRow.appendChild(field);
 
             const elements = document.createElement('div');
             elements.className = 'card-elements-horizontal';
@@ -70,8 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const preview = document.createElement('p');
             preview.className = 'card-preview';
-            const trimmed = item.description && item.description.length > 100;
-            preview.textContent = trimmed ? `${item.description.slice(0, 100)}...` : (item.description || '');
+            const trimmed = item.description && item.description.length > 150;
+            preview.textContent = trimmed ? `${item.description.slice(0, 150)}...` : (item.description || '');
 
             const meta = document.createElement('div');
             meta.className = 'card-meta';
@@ -100,8 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
             meta.appendChild(comments);
             meta.appendChild(cta);
 
-            content.appendChild(title);
-            content.appendChild(field);
+            content.appendChild(headerRow);
             content.appendChild(elements);
             content.appendChild(preview);
             content.appendChild(meta);
@@ -153,6 +210,63 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, { rootMargin: '200px' });
             observer.observe(sentinel);
+        }
+    }
+
+    // Table view lazy loading
+    const tableContainer = document.getElementById('table-container');
+    if (tableContainer) {
+        const tableBody = document.getElementById('table-body');
+        const tableSentinel = document.getElementById('table-sentinel');
+        const tableLoader = document.getElementById('table-loader');
+        let tablePage = Number(tableContainer.dataset.page || '1');
+        let tableHasMore = tableContainer.dataset.hasMore === 'true';
+        const tablePerPage = Number(tableContainer.dataset.perPage || '20');
+        let tableIsLoading = false;
+
+        const loadMoreTable = async () => {
+            if (tableIsLoading || !tableHasMore) {
+                return;
+            }
+            tableIsLoading = true;
+            if (tableLoader) {
+                tableLoader.classList.add('active');
+            }
+
+            const nextPage = tablePage + 1;
+            try {
+                const response = await fetch(`/api/its?page=${nextPage}&per_page=${tablePerPage}`);
+                if (!response.ok) {
+                    throw new Error('Failed to load table rows');
+                }
+                const data = await response.json();
+                data.items.forEach(item => {
+                    tableBody.appendChild(createTableRow(item));
+                });
+                tablePage = nextPage;
+                tableHasMore = data.has_more;
+                tableContainer.dataset.page = String(tablePage);
+                tableContainer.dataset.hasMore = tableHasMore ? 'true' : 'false';
+                if (!tableHasMore && tableSentinel) {
+                    tableSentinel.style.display = 'none';
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                tableIsLoading = false;
+                if (tableLoader) {
+                    tableLoader.classList.remove('active');
+                }
+            }
+        };
+
+        if (tableSentinel && tableHasMore) {
+            const tableObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    loadMoreTable();
+                }
+            }, { rootMargin: '200px' });
+            tableObserver.observe(tableSentinel);
         }
     }
 });

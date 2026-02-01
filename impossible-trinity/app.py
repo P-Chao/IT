@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from sqlalchemy.orm import joinedload
 import bcrypt
 import csv
 import io
@@ -30,24 +31,52 @@ def inject_user():
 @app.route('/')
 def index():
     view_type = request.args.get('view', 'card')  # card or table
-    if view_type == 'card':
-        per_page = 12
-        page = 1
-        pagination = ImpossibleTrinity.query.order_by(
-            ImpossibleTrinity.created_at.desc()
-        ).paginate(page=page, per_page=per_page, error_out=False)
-        return render_template(
-            'index.html',
-            its=pagination.items,
-            view_type=view_type,
-            has_more=pagination.has_next,
-            per_page=per_page
+    field_filter = request.args.get('field', '')
+    search_query = request.args.get('q', '').strip()
+    
+    # Get all unique fields
+    fields = db.session.query(ImpossibleTrinity.field).distinct().order_by(ImpossibleTrinity.field).all()
+    fields = [f[0] for f in fields]
+    
+    # Query with filters
+    query = ImpossibleTrinity.query
+    
+    # Apply field filter if provided
+    if field_filter:
+        query = query.filter_by(field=field_filter)
+    
+    # Apply search query if provided
+    if search_query:
+        search_pattern = f'%{search_query}%'
+        query = query.filter(
+            db.or_(
+                ImpossibleTrinity.name.ilike(search_pattern),
+                ImpossibleTrinity.name_en.ilike(search_pattern),
+                ImpossibleTrinity.field.ilike(search_pattern),
+                ImpossibleTrinity.element1.ilike(search_pattern),
+                ImpossibleTrinity.element2.ilike(search_pattern),
+                ImpossibleTrinity.element3.ilike(search_pattern),
+                ImpossibleTrinity.description.ilike(search_pattern)
+            )
         )
-
-    impossible_trinities = ImpossibleTrinity.query.order_by(
+    
+    # Use pagination for both views to improve performance
+    per_page = 20 if view_type == 'table' else 12
+    page = 1
+    pagination = query.order_by(
         ImpossibleTrinity.created_at.desc()
-    ).all()
-    return render_template('index.html', its=impossible_trinities, view_type=view_type)
+    ).paginate(page=page, per_page=per_page, error_out=False)
+    
+    return render_template(
+        'index.html',
+        its=pagination.items,
+        view_type=view_type,
+        has_more=pagination.has_next,
+        per_page=per_page,
+        fields=fields,
+        current_field=field_filter,
+        search_query=search_query
+    )
 
 @app.route('/api/its')
 def api_its():
@@ -72,6 +101,7 @@ def api_its():
             'element1_sacrifice_explanation': it.element1_sacrifice_explanation,
             'element2_sacrifice_explanation': it.element2_sacrifice_explanation,
             'element3_sacrifice_explanation': it.element3_sacrifice_explanation,
+            'created_at': it.created_at.isoformat(),
         })
 
     return jsonify({
@@ -290,8 +320,24 @@ def admin():
         flash('需要管理员权限')
         return redirect(url_for('index'))
     
-    all_its = ImpossibleTrinity.query.order_by(ImpossibleTrinity.created_at.desc()).all()
-    return render_template('admin.html', its=all_its)
+    # Get pagination parameters
+    page = request.args.get('page', 1, type=int)
+    per_page = 1000  # Show 1000 records per page
+    
+    # Use pagination with eager loading to avoid N+1 query problem
+    pagination = ImpossibleTrinity.query.options(
+        joinedload(ImpossibleTrinity.creator),
+        joinedload(ImpossibleTrinity.comments)
+    ).order_by(
+        ImpossibleTrinity.created_at.desc()
+    ).paginate(page=page, per_page=per_page, error_out=False)
+    
+    return render_template(
+        'admin.html',
+        its=pagination.items,
+        pagination=pagination,
+        per_page=per_page
+    )
 
 @app.route('/agree/<int:id>', methods=['POST'])
 @login_required
