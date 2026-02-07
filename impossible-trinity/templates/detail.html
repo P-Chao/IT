@@ -53,55 +53,28 @@
 
         <div class="elements-section">
             <h2>三个元素</h2>
-            <div class="elements-grid">
-                {% if it.element1_image_url %}
-                    <div class="element-item">
-                        <img src="{{ it.element1_image_url }}" alt="元素1" class="element-image" onerror="this.style.display='none'">
-                        <div class="element-content">
-                            <span class="element-number">1</span>
-                            <p class="element-text">{{ it.element1 }}</p>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="element-item">
-                        <div class="element-content">
-                            <span class="element-number">1</span>
-                            <p class="element-text">{{ it.element1 }}</p>
-                        </div>
-                    </div>
-                {% endif %}
-                {% if it.element2_image_url %}
-                    <div class="element-item">
-                        <img src="{{ it.element2_image_url }}" alt="元素2" class="element-image" onerror="this.style.display='none'">
-                        <div class="element-content">
-                            <span class="element-number">2</span>
-                            <p class="element-text">{{ it.element2 }}</p>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="element-item">
-                        <div class="element-content">
-                            <span class="element-number">2</span>
-                            <p class="element-text">{{ it.element2 }}</p>
-                        </div>
-                    </div>
-                {% endif %}
-                {% if it.element3_image_url %}
-                    <div class="element-item">
-                        <img src="{{ it.element3_image_url }}" alt="元素3" class="element-image" onerror="this.style.display='none'">
-                        <div class="element-content">
-                            <span class="element-number">3</span>
-                            <p class="element-text">{{ it.element3 }}</p>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="element-item">
-                        <div class="element-content">
-                            <span class="element-number">3</span>
-                            <p class="element-text">{{ it.element3 }}</p>
-                        </div>
-                    </div>
-                {% endif %}
+            <div class="elements-list">
+                <div class="element-row">
+                    <span class="element-tag">1</span>
+                    {% if it.element1_image_url %}
+                        <img src="{{ it.element1_image_url }}" alt="元素1" class="element-thumb" onerror="this.style.display='none'">
+                    {% endif %}
+                    <span class="element-name">{{ it.element1 }}</span>
+                </div>
+                <div class="element-row">
+                    <span class="element-tag">2</span>
+                    {% if it.element2_image_url %}
+                        <img src="{{ it.element2_image_url }}" alt="元素2" class="element-thumb" onerror="this.style.display='none'">
+                    {% endif %}
+                    <span class="element-name">{{ it.element2 }}</span>
+                </div>
+                <div class="element-row">
+                    <span class="element-tag">3</span>
+                    {% if it.element3_image_url %}
+                        <img src="{{ it.element3_image_url }}" alt="元素3" class="element-thumb" onerror="this.style.display='none'">
+                    {% endif %}
+                    <span class="element-name">{{ it.element3 }}</span>
+                </div>
             </div>
         </div>
 
@@ -112,37 +85,39 @@
 
         <div class="description-section">
             <h2>三种情况说明</h2>
-            <p class="description-text">
-                <strong>{{ it.element1 }}无法满足时：</strong>
-                {{ it.element1_sacrifice_explanation or '暂无说明' }}
-            </p>
-            <p class="description-text">
-                <strong>{{ it.element2 }}无法满足时：</strong>
-                {{ it.element2_sacrifice_explanation or '暂无说明' }}
-            </p>
-            <p class="description-text">
-                <strong>{{ it.element3 }}无法满足时：</strong>
-                {{ it.element3_sacrifice_explanation or '暂无说明' }}
-            </p>
+            <div class="sacrifice-list">
+                <div class="sacrifice-item">
+                    <span class="sacrifice-label">{{ it.element1 }}无法满足时</span>
+                    <span class="sacrifice-desc">{{ it.element1_sacrifice_explanation or '暂无说明' }}</span>
+                </div>
+                <div class="sacrifice-item">
+                    <span class="sacrifice-label">{{ it.element2 }}无法满足时</span>
+                    <span class="sacrifice-desc">{{ it.element2_sacrifice_explanation or '暂无说明' }}</span>
+                </div>
+                <div class="sacrifice-item">
+                    <span class="sacrifice-label">{{ it.element3 }}无法满足时</span>
+                    <span class="sacrifice-desc">{{ it.element3_sacrifice_explanation or '暂无说明' }}</span>
+                </div>
+            </div>
         </div>
 
         <div class="meta-section">
-            <div class="meta-item">
-                <span class="meta-label">创建者：</span>
-                <span class="meta-value">{{ it.creator.username }}</span>
+            <div class="meta-row">
+                <span class="meta-key">创建者</span>
+                <span class="meta-val">{{ it.creator.username }}</span>
             </div>
-            <div class="meta-item">
-                <span class="meta-label">创建时间：</span>
-                <span class="meta-value">{{ it.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            <div class="meta-row">
+                <span class="meta-key">创建时间</span>
+                <span class="meta-val">{{ it.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
             </div>
-            <div class="meta-item">
-                <span class="meta-label">赞同数：</span>
-                <span class="meta-value">{{ it.agree_count }}</span>
+            <div class="meta-row">
+                <span class="meta-key">赞同数</span>
+                <span class="meta-val">{{ it.agree_count }}</span>
             </div>
             {% if it.hyperlink %}
-                <div class="meta-item">
-                    <span class="meta-label">参考资料：</span>
-                    <a href="{{ it.hyperlink }}" target="_blank" class="meta-link">查看链接</a>
+                <div class="meta-row">
+                    <span class="meta-key">参考资料</span>
+                    <a href="{{ it.hyperlink }}" target="_blank" class="meta-val meta-link">查看链接</a>
                 </div>
             {% endif %}
         </div>

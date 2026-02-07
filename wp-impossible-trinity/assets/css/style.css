@@ -1,0 +1,394 @@
+/**
+ * Impossible Trinity Plugin Styles
+ * WordPress-compatible flat design
+ */
+
+/* Archive Page Header */
+.it-archive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.it-archive-title {
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* View Toggle */
+.it-view-toggle {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.it-toggle-btn {
+    padding: 0.5rem 1rem;
+    background: #f5f5f5;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.it-toggle-btn:hover {
+    background: #e5e5e5;
+}
+
+.it-toggle-btn.active {
+    background: #2271b1;
+    color: #fff;
+}
+
+/* Card Grid */
+.it-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Card */
+.it-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.it-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.it-card-content {
+    padding: 1.5rem;
+}
+
+.it-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.it-card-title {
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.it-card-title a {
+    text-decoration: none;
+    color: #333;
+}
+
+.it-card-title a:hover {
+    color: #2271b1;
+}
+
+.it-card-field {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    background: #f5f5f5;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+/* Elements */
+.it-elements-horizontal {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.it-element-badge {
+    padding: 0.5rem 0.75rem;
+    background: #f0f6fc;
+    border: 1px solid #c3e6fd;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.it-element-badge span {
+    font-weight: 600;
+}
+
+/* Card Preview & Meta */
+.it-card-preview {
+    color: #666;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.it-card-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.it-agree-count,
+.it-comment-count {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #666;
+}
+
+.it-meta-icon {
+    font-size: 0.9rem;
+}
+
+.it-card-cta {
+    margin-left: auto;
+    color: #2271b1;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Table */
+.it-table-container {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.it-data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.it-data-table th,
+.it-data-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.it-data-table th {
+    background: #f5f5f5;
+    font-weight: 600;
+}
+
+.it-data-table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+.it-table-name {
+    font-weight: 600;
+}
+
+.it-table-name a {
+    text-decoration: none;
+    color: #333;
+}
+
+.it-table-name a:hover {
+    color: #2271b1;
+}
+
+/* Detail Page */
+.it-detail {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.it-detail-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.it-detail-title {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.it-detail-subtitle {
+    font-size: 1.25rem;
+    color: #666;
+    margin: 0 0 1rem 0;
+    font-weight: 400;
+}
+
+.it-detail-meta {
+    display: flex;
+    gap: 1.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.it-detail-field {
+    font-weight: 600;
+}
+
+/* Elements Section */
+.it-elements-section {
+    margin-bottom: 2rem;
+}
+
+.it-elements-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.it-elements-large {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.it-element-large {
+    flex: 1;
+    min-width: 200px;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.it-element-title {
+    font-size: 1.25rem;
+    margin: 0 0 0.75rem 0;
+    color: #333;
+}
+
+.it-element-sacrifice {
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Description Section */
+.it-description-section {
+    margin-bottom: 2rem;
+}
+
+.it-description-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.it-description {
+    line-height: 1.8;
+    color: #333;
+}
+
+/* Reference Section */
+.it-reference-section {
+    margin-bottom: 2rem;
+}
+
+.it-reference-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.it-reference-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #f0f6fc;
+    border: 1px solid #c3e6fd;
+    border-radius: 4px;
+    color: #2271b1;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.it-reference-link:hover {
+    background: #2271b1;
+    color: #fff;
+}
+
+/* Actions Section */
+.it-actions-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.it-agree-button {
+    background: #22c55e;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.it-agree-button:hover {
+    background: #16a34a;
+}
+
+.it-agree-icon {
+    margin-right: 0.5rem;
+}
+
+.it-agree-count {
+    margin-left: 0.5rem;
+}
+
+/* Empty State */
+.it-empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.it-empty-state p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+/* Loader */
+.it-loader {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.it-sentinel {
+    height: 1px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .it-archive-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .it-card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .it-elements-large {
+        flex-direction: column;
+    }
+
+    .it-element-large {
+        min-width: 100%;
+    }
+
+    .it-detail-title {
+        font-size: 1.75rem;
+    }
+
+    .it-detail-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
